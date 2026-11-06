@@ -57,8 +57,8 @@ h2{font-size:12.5px;text-transform:uppercase;color:var(--mu);margin:24px 16px 8p
 
 /* Cambio de pestaña: solo se anima el contenido (transform, sin opacity para no romper el blur del cristal).
    La barra inferior vive en #dockhost, fuera de #app, y nunca se recrea: no hay doble imagen ni selector fantasma. */
-.w.tin{animation:tin .3s cubic-bezier(.22,1,.36,1) backwards}
-@keyframes tin{from{transform:translateY(10px)}to{transform:none}}
+.w.tin{animation:tab-in .3s cubic-bezier(.22,1,.36,1) backwards}
+@keyframes tab-in{from{transform:translateY(10px)}to{transform:none}}
 .plus svg.i{width:26px;height:26px;stroke-width:2.5}
 .ov{position:fixed;inset:0;z-index:12;display:flex;align-items:flex-end;justify-content:center}
 .bk{position:absolute;inset:0;background:rgba(10,12,20,.38);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
@@ -186,7 +186,9 @@ h2{font-size:12.5px;text-transform:uppercase;color:var(--mu);margin:24px 16px 8p
 .tpb p{margin:4px 0 0;font-size:14px;line-height:1.45;color:var(--tx);opacity:.88}
 .tipc.f{padding:16px}.tipc.f .tpe{width:50px;height:50px;font-size:27px}.tipc.f .tph b{font-size:16.5px}.tipc.f p{font-size:14.5px}
 .goalc{padding:16px;border-radius:24px;background:radial-gradient(110% 90% at 100% 0%,color-mix(in srgb,var(--gr) 18%,transparent),transparent 60%),linear-gradient(145deg,var(--gl1),var(--gl2));border:1px solid var(--gb);box-shadow:0 8px 24px var(--gs),inset 0 1px 0 var(--gh)}
-.rsf{position:sticky;bottom:calc(-1 * env(safe-area-inset-bottom,0px));margin:16px -16px calc(-14px - env(safe-area-inset-bottom,0px));padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,color-mix(in srgb,var(--bg) 88%,transparent) 45%);z-index:2}.rsf .btn{margin-top:0}
+.sh.rs{padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))}
+.rsf{position:absolute;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:100%;max-width:520px;padding:0 16px;pointer-events:none;z-index:13}
+.rsf .btn{margin-top:0;pointer-events:auto}
 .toast{gap:10px}.toast .ti{display:grid;place-items:center;width:24px;height:24px;flex:none}.toast .tm{line-height:1.3}
 .toast.in{animation:tin .38s cubic-bezier(.2,.9,.3,1.25)}@keyframes tin{from{opacity:0;transform:translate(-50%,16px) scale(.88)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
 .toast .chk{width:24px;height:24px;fill:none;stroke:#30d158;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
@@ -712,7 +714,7 @@ function rsV(){const r=monthReport(rs.m),cur=today().slice(0,7),st=r.st,mx=r.cat
   const tp=r.tips.length?`${hd('Lo que notamos')}<div class="tipl">${r.tips.map((t,i)=>`<div class="tipc${i==0?' f':''}" style="--c:${tipCol(t.c)}"><span class="tpe">${t.e}</span><div class="tpb"><div class="tph"><b>${esc(t.h)}</b>${t.v?`<span class="tpv">${esc(t.v)}</span>`:''}</div><p>${esc(t.t)}</p></div></div>`).join('')}</div>`:'';
   const bz2=r.biz.length?`${hd('Tus negocios')}<div class="cd">${r.biz.map(b=>`<div class="rw" style="align-items:flex-start"><span class="ico">${av(b.n,32)}<span><b style="display:block;font-weight:600">${esc(b.n)}</b><span class="mu"><span class="gr">+${fm(b.i)}</span> · <span class="rd">−${fm(b.g)}</span>${b.profit!=null?` · ganancia est. ${fm(b.profit)}`:''}${b.top?`<br>Más vendido: ${esc(b.top)}`:''}</span></span></span><span class="am ${b.i-b.g<0?'rd':'gr'}">${fm(b.i-b.g)}</span></div>`).join('')}</div>`:'';
   const gl=r.goal>0&&r.G>0?`${hd('Meta para el próximo mes 🎯')}<div class="goalc"><div class="mu">Intenta gastar máximo</div><div class="big" style="font-size:32px">${fm(r.goal)}</div><div class="mu" style="margin-top:2px;line-height:1.45">Recortando solo un 10% de lo que gastas en comida, transporte, ocio y compras, ahorrarías <b style="color:var(--tx)">${fm(r.save)}</b>.</div><button class="btn" data-a="rsbud" data-v="${r.goal}">Usar como presupuesto del mes</button></div>`:'';
-  return `<div class="ov"><div class="bk${anim?' in':''}" data-a="rsclose"></div><div class="sh rs${anim?' in':''}">${head}${sec(hero)}${sec(cb)}${sec(hz)}${sec(tp)}${sec(bz2)}${sec(gl)}<div class="rsf"><button class="btn" data-a="rsclose">Entendido</button></div></div></div>`}
+  return `<div class="ov"><div class="bk${anim?' in':''}" data-a="rsclose"></div><div class="sh rs${anim?' in':''}">${head}${sec(hero)}${sec(cb)}${sec(hz)}${sec(tp)}${sec(bz2)}${sec(gl)}</div><div class="rsf"><button class="btn" data-a="rsclose">Entendido</button></div></div>`}
 /* Estado del mes: ¿gastas lo que ingresó, usas tus ahorros de meses anteriores, o realmente te pasaste? */
 const carryOf=(w,m)=>{const x=bal(w,m+'-01');return x.b+x.e};
 function monthState(i,o,carry){const d=o-i;if(d<=0)return{k:'verde',sobra:-d};if(carry>0&&d<=carry)return{k:'ahorros',usado:d,quedan:carry-d};return{k:'rojo',falta:d,agoto:carry>0}}
@@ -739,10 +741,11 @@ let dg=null;
 const dgReset=d=>{d.sh.style.transition='transform .28s cubic-bezier(.2,.9,.3,1)';d.sh.style.transform='';const bk=d.sh.parentNode&&d.sh.parentNode.querySelector('.bk');if(bk)bk.style.opacity=''};
 document.addEventListener('touchstart',e=>{const sh=e.target.closest&&e.target.closest('.sh'),t=e.touches&&e.touches[0];
   if(!sh||!t||e.target.closest('.hs,input,textarea,select,.dots')){dg=null;return}
-  const r=sh.getBoundingClientRect?sh.getBoundingClientRect():{top:0},head=!!e.target.closest('.shh')||(t.clientY-r.top<26);
-  dg={sh,y:t.clientY,x:t.clientX,head,t:Date.now(),on:false,dy:0}},{passive:true});
+  const r=sh.getBoundingClientRect(),handleY=t.clientY-r.top,handleX=t.clientX-(r.left+r.width/2);
+  if(handleY<8||handleY>30||Math.abs(handleX)>30){dg=null;return}
+  dg={sh,y:t.clientY,x:t.clientX,t:Date.now(),on:false,dy:0}},{passive:true});
 document.addEventListener('touchmove',e=>{if(!dg)return;const t=e.touches[0],dy=t.clientY-dg.y,dx=t.clientX-dg.x;
-  if(!dg.on){if((dg.head||dg.sh.scrollTop<=0)&&dy>10&&Math.abs(dy)>Math.abs(dx)*1.4){dg.on=true;dg.sh.style.transition='none'}else return}
+  if(!dg.on){if(dy>10&&Math.abs(dy)>Math.abs(dx)*1.4){dg.on=true;dg.sh.style.transition='none'}else return}
   e.preventDefault();dg.dy=Math.max(0,dy);dg.sh.style.transform='translateY('+dg.dy+'px)';const bk=dg.sh.parentNode&&dg.sh.parentNode.querySelector('.bk');if(bk)bk.style.opacity=String(Math.max(.2,1-dg.dy/520))},{passive:false});
 const dgEnd=cancel=>e=>{if(!dg)return;const d=dg;dg=null;if(!d.on)return;const v=d.dy/Math.max(1,Date.now()-d.t);
   if(!cancel&&(d.dy>120||v>0.6)){const bk=d.sh.parentNode&&d.sh.parentNode.querySelector('.bk'),c=bk||d.sh.querySelector('[data-a$="close"]');if(c)c.click();else dgReset(d)}else dgReset(d)};
@@ -763,12 +766,12 @@ const NOVEDADES={'2.0':{t:'Novedades de la V2',s:'Esto es lo nuevo desde la V1. 
  nota:['Tus datos de la V1 se conservan. Aun así, haz una copia de seguridad desde Ajustes de vez en cuando.','Tus negocios quedaron como tipo «Otro»; cambia el tipo con el engranaje de cada negocio.']}};
 const nvItem=(x,key,big)=>{const o=!!nvOpen[key];return `<div class="nvc${o?' open':''}${big?'':' sm'}" style="--c:${x.c||'var(--ac)'}"><button class="nvh" data-a="nvt" data-v="${key}" aria-expanded="${o}"><span class="nvi">${I(x.ic||'check',big?22:18)}</span><span class="nvm"><b>${esc(x.h)}</b>${x.t?`<span class="mu">${esc(x.t)}</span>`:''}</span><span class="chv">${I('chev',16)}</span></button><div class="nvd"><div><ul>${x.d.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>${x.go?`<button class="chip nvgo" data-a="nvgo" data-v="${esc(x.go[0])}">${esc(x.go[1])}${I('chev',14)}</button>`:''}</div></div></div>`};
 function nvV(){const N=NOVEDADES[APP_VER];if(!N)return '';let n=0;const sec=h=>`<div class="rs-s${rsAnim?' rise':''}" style="--i:${n++}">${h}</div>`,keys=[...N.hl.map((_,i)=>'h'+i),...N.mj.map((_,i)=>'m'+i)],all=keys.every(k=>nvOpen[k]);
-  return `<div class="ov"><div class="bk${anim?' in':''}" data-a="nvclose"></div><div class="sh rs${anim?' in':''}"><div class="shh"><span style="width:64px"></span><b>Novedades</b><button class="lk bd" data-a="nvclose">Cerrar</button></div>
+  return `<div class="ov"><div class="bk${anim?' in':''}" data-a="nvclose"></div><div class="sh rs nvsh${anim?' in':''}"><div class="shh"><span style="width:64px"></span><b>Novedades</b><button class="lk bd" data-a="nvclose">Cerrar</button></div>
 ${sec(`<div class="nvt"><div class="nvbadge">V${APP_VER.split('.')[0]}</div><h1 style="font-size:26px;margin:0">${esc(N.t)}</h1><p class="mu" style="margin:6px 0 0;line-height:1.4">${esc(N.s)}</p></div>`)}
 ${sec(`${hd('Lo más nuevo',`<button data-a="nvall">${all?'Contraer todo':'Expandir todo'}</button>`)}<div class="nvl">${N.hl.map((x,i)=>nvItem(x,'h'+i,true)).join('')}</div>`)}
 ${sec(`${hd('Y también mejoramos')}<div class="nvl">${N.mj.map((x,i)=>nvItem(x,'m'+i,false)).join('')}</div>`)}
 ${sec(`${hd('Antes de seguir')}<div class="cd p" style="font-size:13.5px;line-height:1.5">${N.nota.map(t=>`<div style="display:flex;gap:8px;margin:4px 0"><span style="color:var(--or);flex:none;margin-top:1px">${I('alert',16)}</span><span>${esc(t)}</span></div>`).join('')}</div>`)}
-<div class="rsf"><button class="btn" data-a="nvclose">¡Entendido!</button></div></div></div>`}
+</div><div class="rsf"><button class="btn" data-a="nvclose">¡Entendido!</button></div></div>`}
 function nvCheck(){if(nv||!NOVEDADES[APP_VER])return;if(rs||sheet||fx||dbt||ivt||pg||pi||sv||pdt||bcfg||chg||avsheet||cf)return;const seen=LS.get('fin_ver_visto');if(seen===APP_VER)return;
   const has=S.txs.length||S.biz.length||(S.fijos||[]).length||(S.deudas||[]).length||(S.inv||[]).length;LS.set('fin_ver_visto',APP_VER);
   if(!seen&&!has)return;nv=true;nvOpen={h0:true};anim=1;rsAnim=1}
